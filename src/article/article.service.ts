@@ -1,29 +1,50 @@
 import { Injectable } from '@nestjs/common';
-import { ArticleDto } from './dto';
+import { CreateArticleDto, UpdateArticleDto } from './dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class ArticleService {
-  constructor (private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) {}
 
-  async getAllArticle(dto: ArticleDto) {
-    const articles = await this.prisma.article.findMany()
-    return articles
+  getAllArticle() {
+    return this.prisma.article.findMany()
   }
 
-  async getArticleById(dto: ArticleDto) {}
+  getArticleById(articleId: number) {
+    return this.prisma.article.findUnique({
+      where: {
+        id: articleId,
+      }
+    })
+  }
 
-  async createArticle(dto: ArticleDto) {
+  async createArticle(dto: CreateArticleDto) {
     const article = await this.prisma.article.create({
       data: {
         ...dto,
       }
+      
     })
     return article
   }
 
-  async updateArticle(dto: ArticleDto) {}
+  async updateArticle(dto: UpdateArticleDto, articleId: number) {
+    return await this.prisma.article.update({
+      where: {
+        id: articleId
+      },
+      data: {
+        ...dto
+      }
+    })
+  }
 
-  async deleteArticle(dto: ArticleDto) {}
+  async deleteArticle(articleId: number) {
+    return await this.prisma.article.delete({
+      where: {
+        id: articleId
+      }
+    })
+  }
 
 }

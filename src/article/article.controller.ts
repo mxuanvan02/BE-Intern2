@@ -1,29 +1,35 @@
-import { Controller, Get, Post, Patch, Delete, Body } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Body, ParseIntPipe, Param, HttpCode, HttpStatus } from '@nestjs/common';
 import { ArticleService } from './article.service';
-import { ArticleDto } from './dto';
+import { CreateArticleDto, UpdateArticleDto } from './dto';
 
 @Controller('articles')
 export class ArticleController {
   constructor (private articleService: ArticleService) {}
   
   @Get()
-  getAlArticle(@Body() dto: ArticleDto) {
-    return this.articleService.getAllArticle(dto)
+  getAllArticle() {
+    return this.articleService.getAllArticle()
+  }
+
+  @Get(':id')
+  getArticleById(@Param('id', ParseIntPipe) articleId: number) {
+    return this.articleService.getArticleById(articleId)
   }
 
   @Post('create')
-  createArticle(@Body() dto: ArticleDto) {
+  createArticle(@Body() dto: CreateArticleDto) {
     return this.articleService.createArticle(dto)
   }
 
-  @Patch()
-  updateArticle(@Body() dto: ArticleDto) {
-    return this.articleService.updateArticle(dto)
+  @Patch(':id')
+  updateArticle(@Body() dto: UpdateArticleDto, @Param('id', ParseIntPipe) articleId: number) {
+    return this.articleService.updateArticle(dto, articleId)
   }
 
-  @Delete()
-  deleteArticle(@Body() dto: ArticleDto) {
-    return this.articleService.deleteArticle(dto)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Delete(':id')
+  deleteArticle(@Param('id', ParseIntPipe) articleId: number) {
+    return this.articleService.deleteArticle(articleId)
   }
 
 }
