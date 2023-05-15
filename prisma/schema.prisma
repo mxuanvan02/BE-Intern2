@@ -22,3 +22,15 @@ model User {
 
   @@map("users")
 }
+
+model Article {
+  id Int @id @default(autoincrement())
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+
+  title String
+  description String?
+  author String
+
+  @@map("articles")
+}
